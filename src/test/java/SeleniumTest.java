@@ -36,6 +36,7 @@ public class SeleniumTest {
     WebElement regEmail = driver.findElement(By.id("email"));
     regName.equals(TestData.userEmail);
     WebElement regAddress1 = driver.findElement(By.xpath("//*[contains(text(), 'Current Address :')]"));
+    //WebElement regAddress1 = driver.findElement(By.xpath("//p[@id=currentAddress]")); так не находит
     regAddress1.equals(currentAddress);
 
     driver.quit();
@@ -59,10 +60,40 @@ public class SeleniumTest {
     // WebElement clickMe = driver.findElement(By.xpath("//*[contains(text(), 'Click Me') and @type='button']"));
     WebElement clickMe = driver.findElement(By.xpath("//*[contains(text(), 'Click Me')]"));
     act.click(clickMe).perform();
+    // дальше не работает
     WebElement dynamicClickMessage = driver.findElement(By.id("dynamicClickMessage"));
     dynamicClickMessage.equals("You have done a dynamic click");
 
     driver.quit();
   }
+
+  @Test
+  void SwitchingToTabs() {
+    driver.get("https://demoqa.com/");
+    WebElement element = driver.findElement(By.xpath("//h5[contains (text(), 'Element')]"));
+    act.click(element).perform();
+    WebElement textBox = driver.findElement(By.id("item-0"));
+    textBox.equals("Text Box");
+    WebElement checkBox = driver.findElement(By.id("item-1"));
+    textBox.equals("Check Box");
+    WebElement radioButton = driver.findElement(By.id("item-2"));
+    textBox.equals("Radio Button");
+    WebElement webTables = driver.findElement(By.id("item-3"));
+    textBox.equals("Web Tables");
+    WebElement buttons = driver.findElement(By.id("item-4"));
+    textBox.equals("Buttons");
+    WebElement links = driver.findElement(By.id("item-4"));
+    textBox.equals("Links");
+    WebElement brokenLinksImages = driver.findElement(By.id("item-5"));
+    textBox.equals("Broken Links - Images");
+    WebElement uploadAndDownload = driver.findElement(By.id("item-7"));
+    textBox.equals("Upload and Download");
+    WebElement DynamicProperties= driver.findElement(By.id("item-8"));
+    textBox.equals("Dynamic Properties");
+
+    driver.quit();
+  }
+
 }
+
 
