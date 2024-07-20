@@ -2,6 +2,7 @@ package tests;
 
 import static io.qameta.allure.Allure.step;
 
+import java.io.File;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -107,7 +108,6 @@ public class SeleniumTest {
   @Test
   @DisplayName("Student Registration Form")
   void registrationPage() {
-
     step("Открыть форму регистрации", () -> {
       driver.get("https://demoqa.com/automation-practice-form");
     });
@@ -156,6 +156,7 @@ public class SeleniumTest {
       WebElement photo = driver.findElement(By.id("uploadPicture"));
       photo.sendKeys(
           "C:\\Users\\anna_\\IdeaProjects\\SeleniumProject\\src\\test\\resources\\devushka-koshka melk.png");
+      // меня смущает абсолютный путь, но я не поняла как сделать по-другому
       WebElement submit = driver.findElement(By.id("submit"));
       submit.submit();
     });
