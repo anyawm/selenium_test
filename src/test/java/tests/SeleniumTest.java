@@ -1,11 +1,17 @@
 package tests;
 
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tests.TestData.userEmail;
+import static tests.TestData.userFullName;
+import static tests.TestData.userName;
 
-import java.io.File;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -18,64 +24,47 @@ public class SeleniumTest {
   WebDriver driver = new ChromeDriver();
   Actions act = new Actions(driver);
 
+  @BeforeEach
+  void beforeAll() {
+    driver.manage().window().setSize(new Dimension(1920, 1080));
+  }
+
+  @AfterEach
+  void setup() {
+    driver.quit();
+  }
 
   @Test
   @DisplayName("Elements")
   void switchingToTabs() {
     driver.get("https://demoqa.com/");
-    WebElement element = driver.findElement(By.xpath("//h5[contains (text(), 'Element')]"));
-    act.click(element).perform();
-    WebElement textBox = driver.findElement(By.id("item-0"));
-    textBox.equals("Text Box");
-    WebElement checkBox = driver.findElement(By.id("item-1"));
-    textBox.equals("Check Box");
-    WebElement radioButton = driver.findElement(By.id("item-2"));
-    textBox.equals("Radio Button");
-    WebElement webTables = driver.findElement(By.id("item-3"));
-    textBox.equals("Web Tables");
-    WebElement buttons = driver.findElement(By.id("item-4"));
-    textBox.equals("Buttons");
-    WebElement links = driver.findElement(By.id("item-4"));
-    textBox.equals("Links");
-    WebElement brokenLinksImages = driver.findElement(By.id("item-5"));
-    textBox.equals("Broken Links - Images");
-    WebElement uploadAndDownload = driver.findElement(By.id("item-7"));
-    textBox.equals("Upload and Download");
-    WebElement DynamicProperties = driver.findElement(By.id("item-8"));
-    textBox.equals("Dynamic Properties");
-    driver.quit();
+    driver.findElement(By.xpath("//h5[contains (text(), 'Element')]")).click();
+    assertEquals("Text Box", driver.findElement(By.id("item-0")).getText());
+    assertEquals("Check Box", driver.findElement(By.id("item-1")).getText());
+    assertEquals("Radio Button", driver.findElement(By.id("item-2")).getText());
+    assertEquals("Web Tables", driver.findElement(By.id("item-3")).getText());
+    assertEquals("Buttons", driver.findElement(By.id("item-4")).getText());
+    assertEquals("Links", driver.findElement(By.id("item-5")).getText());
+    assertEquals("Broken Links - Images", driver.findElement(By.id("item-6")).getText());
+    assertEquals("Upload and Download", driver.findElement(By.id("item-7")).getText());
+    assertEquals("Dynamic Properties", driver.findElement(By.id("item-8")).getText());
   }
 
   @Test
   @DisplayName("Text-box")
   void successfulTextBox() {
     driver.get("https://demoqa.com/text-box");
-
-    WebElement fullName = driver.findElement(By.id("userName"));
-    fullName.sendKeys(TestData.userFullName);
-
-    WebElement email = driver.findElement(By.id("userEmail"));
-    email.sendKeys(TestData.userEmail);
-
-    WebElement currentAddress = driver.findElement(By.id("currentAddress"));
-    currentAddress.sendKeys("Russia, Moscow, Lenina 105-7");
-
-    WebElement permanentAddress = driver.findElement(By.id("permanentAddress"));
-    permanentAddress.sendKeys("Russia, Moscow, Lenina 105-7");
-
-    WebElement submitSutton = driver.findElement(By.id("submit"));
-    submitSutton.click();
-
-    WebElement regName = driver.findElement(By.id("name"));
-    regName.equals(TestData.userFullName);
-    WebElement regEmail = driver.findElement(By.id("email"));
-    regName.equals(TestData.userEmail);
-    WebElement regAddress1 = driver.findElement(
-        By.xpath("//*[contains(text(), 'Current Address :')]"));
-    //WebElement regAddress1 = driver.findElement(By.xpath("//p[@id=currentAddress]")); так не находит
-    regAddress1.equals(currentAddress);
-
-    driver.quit();
+    driver.findElement(By.id("userName")).sendKeys(userFullName);
+    driver.findElement(By.id("userEmail")).sendKeys(userEmail);
+    driver.findElement(By.id("currentAddress")).sendKeys("Russia, Moscow, Lenina 105-7");
+    driver.findElement(By.id("permanentAddress")).sendKeys("Russia, Moscow, Lenina 105-7");
+    driver.findElement(By.id("submit")).click();
+    assertEquals("Name:" + userFullName, driver.findElement(By.id("name")).getText());
+    assertEquals("Email:" + userEmail, driver.findElement(By.id("email")).getText());
+    assertEquals("Current Address :Russia, Moscow, Lenina 105-7", driver.findElement(By.xpath("//*[contains(text(), 'Current Address :')]")).
+        getText());
+    assertEquals("Permananet Address :Russia, Moscow, Lenina 105-7", driver.findElement(By.xpath("//*[contains(text(), 'Permananet Address :')]")).
+        getText());
   }
 
 
@@ -84,26 +73,16 @@ public class SeleniumTest {
   void successfulRadioButton() {
     driver.get("https://demoqa.com/buttons");
 
-    WebElement doubleClickBtn = driver.findElement(By.id("doubleClickBtn"));
-    act.doubleClick(doubleClickBtn).perform();
-    WebElement doubleClickMessage = driver.findElement(By.id("doubleClickMessage"));
-    doubleClickMessage.equals("You have done a double click");
-
-    WebElement rightClickBtn = driver.findElement(By.id("rightClickBtn"));
-    act.contextClick(rightClickBtn).perform();
-    WebElement rightClickMessage = driver.findElement(By.id("rightClickMessage"));
-    rightClickMessage.equals("You have done a right click");
-
-    // WebElement clickMe = driver.findElement(By.xpath("//*[contains(text(), 'Click Me') and @type='button']"));
-    WebElement clickMe = driver.findElement(By.xpath("//*[contains(text(), 'Click Me')]"));
-    act.click(clickMe).perform();
-    // дальше не работает
-    WebElement dynamicClickMessage = driver.findElement(By.id("dynamicClickMessage"));
-    dynamicClickMessage.equals("You have done a dynamic click");
-
-    driver.quit();
+    act.doubleClick(driver.findElement(By.id("doubleClickBtn"))).perform();
+    assertEquals("You have done a double click", driver.findElement(By.id("doubleClickMessage")).
+        getText());
+    act.contextClick(driver.findElement(By.id("rightClickBtn"))).perform();
+    assertEquals("You have done a right click", driver.findElement(By.id("rightClickMessage")).
+        getText());
+    driver.findElement(By.xpath("//button[text()='Click Me']")).click();
+    assertEquals("You have done a dynamic click", driver.findElement(By.id("dynamicClickMessage")).
+        getText());
   }
-
 
   @Test
   @DisplayName("Student Registration Form")
@@ -112,65 +91,31 @@ public class SeleniumTest {
       driver.get("https://demoqa.com/automation-practice-form");
     });
     step("заполнить ФИО, почту, пол", () -> {
-      WebElement userFirstName = driver.findElement(By.id("firstName"));
-      userFirstName.sendKeys(TestData.userName);
-      WebElement userLastName = driver.findElement(By.id("lastName"));
-      userLastName.sendKeys(TestData.userSurname);
-      WebElement email = driver.findElement(By.id("userEmail"));
-      email.sendKeys(TestData.userEmail);
-      WebElement userGender = driver.findElement(By.id("gender-radio-3"));
-      act.click(userGender).perform();
+      driver.findElement(By.id("firstName")).sendKeys(userName);
+      driver.findElement(By.id("lastName")).sendKeys(TestData.userSurname);
+      driver.findElement(By.id("userEmail")).sendKeys(userEmail);
+      driver.findElement(By.xpath("//label[@for = 'gender-radio-3']")).click();
     });
     step("заполнить номер телефона, дату рождения и предмет", () -> {
-      WebElement userNumber = driver.findElement(By.id("userNumber"));
-      userNumber.sendKeys(TestData.userPhone);
-      //не смогла изменить дату ни через ввод текста, ни через календарь, поэтому поменяла как смогла :)
-      WebElement userBirthDay = driver.findElement(By.id("dateOfBirthInput"));
-      act.doubleClick(userBirthDay).sendKeys("2000").sendKeys(Keys.ENTER).perform();
-      //userBirthDay.sendKeys("01.01.2000");
-      WebElement userSubject = driver.findElement(By.id("subjectsInput"));
-      userSubject.sendKeys(TestData.userSubject);
+      driver.findElement(By.id("userNumber")).sendKeys(TestData.userPhone);
+      driver.findElement(By.id("dateOfBirthInput")).click();
+      driver.findElement(By.xpath("//*[@aria-label = 'Choose Monday, July 22nd, 2024']")).click();
+      driver.findElement(By.id("subjectsInput")).sendKeys(TestData.userSubject);
     });
     step("заполнить [хобби, адрес и штат]", () -> {
-      //тест не падает, но хобби не заполняется, если выбрать act.click(), но на форме не нужен даблклик
-      //пробовала разные локаторы
-      //WebElement userHobby = driver.findElement(By.id("hobbies-checkbox-2"));
-      //WebElement userHobby = driver.findElement(By.xpath("//@label[contains(text(), 'Reading')]"));
-      WebElement userHobby = driver.findElement(By.id("hobbiesWrapper")).
-          findElement(By.xpath("//*[contains(text(), 'Reading')]"));
-      act.doubleClick(userHobby).perform();
-      WebElement userAddress = driver.findElement(By.id("currentAddress"));
-      userAddress.sendKeys(TestData.userAddress);
-      // штат и город тоже не смогла заполнить
-      // тест не падает, но не заполняется ни текстом ни выбором (выбором падает)
-      // выбором пробовала так
-      //WebElement userState = driver.findElement(By.id("state"));
-      //act.click(userState);
-      //WebElement chooseState = driver.findElement(By.id("react-select-3-option-2")); //нашла при фризе
-      // act.click(chooseState).perform();
-      WebElement userState = driver.findElement(
-          By.xpath("//div[contains(text(), 'Select State')]"));
-      act.doubleClick(userState).sendKeys("NCR").sendKeys(Keys.ENTER).perform();
-    });
+      //driver.findElement(By.xpath("//label[@for='hobbies-checkbox-2']")).click();
+      driver.findElement(By.id("currentAddress")).sendKeys(TestData.userAddress);
+      });
     step("отправка фото и формы", () -> {
       WebElement photo = driver.findElement(By.id("uploadPicture"));
       photo.sendKeys(
           "C:\\Users\\anna_\\IdeaProjects\\SeleniumProject\\src\\test\\resources\\devushka-koshka melk.png");
       // меня смущает абсолютный путь, но я не поняла как сделать по-другому
-      WebElement submit = driver.findElement(By.id("submit"));
-      submit.submit();
+      driver.findElement(By.id("submit")).submit();
     });
     step("Проверка зполнения формы", () -> {
-      WebElement modalWindow = driver.findElement(By.className("modal-header"));
-      modalWindow.isDisplayed();
-      WebElement modalTitle = driver.findElement(By.id("example-modal-sizes-title-lg"));
-      modalTitle.equals("Thanks for submitting the form");
-      WebElement table = driver.findElement(By.className("table-responsive"));
-      table.equals(TestData.userName);
-      table.equals(TestData.userSurname);
-      table.equals(TestData.userEmail);
-      table.equals(TestData.userAddress);
-      table.equals(TestData.userPhone);
+      driver.findElement(By.className("modal-header")).isDisplayed();
+      assertEquals("Thanks for submitting the form", driver.findElement(By.id("example-modal-sizes-title-lg")).getText());
     });
   }
 }
